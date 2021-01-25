@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FindTheWordKotlin</string>
+    <string name="about">Find The Word in Picture game by Abdulaziz Rasulbek</string>
+</resources>
