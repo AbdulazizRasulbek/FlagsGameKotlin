@@ -1,5 +1,6 @@
 package uz.pdp.findthewordkotlin.presenter
 
+import android.content.Context
 import android.os.CountDownTimer
 import cn.pedant.SweetAlert.SweetAlertDialog
 import uz.pdp.findthewordkotlin.contract.GameContract
@@ -9,13 +10,12 @@ import uz.pdp.findthewordkotlin.model.Repository
 import uz.pdp.findthewordkotlin.R
 import kotlin.collections.ArrayList
 
-class PresenterImpl(
-    val localStorage: LocalStorage,
+class PresenterImpl(context: Context,
     val view: GameContract.View
 ) : GameContract.Presenter {
-
+    private val localStorage=LocalStorage(context)
     private val model = Repository()
-    private var position = localStorage.level
+    private var position=localStorage.level
     private val list: List<QuestionData> = model.getQuestionData()
     private var answersSize = 10
     private var variantSize = 16
@@ -42,7 +42,7 @@ class PresenterImpl(
     }
 
     private fun isAnswerTrue(): Boolean {
-        return view.getAnswerFullText().equals(getCurrentQuestion().answer, ignoreCase = true)
+        return view.getAnswerFullText().toLowerCase() == getCurrentQuestion().answer.toLowerCase()
     }
 
     override fun variantClick(pos: Int) {
@@ -61,7 +61,7 @@ class PresenterImpl(
 
     }
 
-    val shownLetters=ArrayList<Int>()
+
     override fun showLetterClick() {
 
         val answer = getCurrentQuestion().answer
@@ -80,19 +80,16 @@ class PresenterImpl(
                         if (view.getAnswerText(i).isEmpty()) {
                             view.setAnswerText(i, answer[i] + "")
                             view.setAnswerTag(i, "tag")
-                            shownLetters.add(i)
                             view.setBackgroundButton(i, R.drawable.bg_true, "#ffffff")
 
                             coins -= 50
                             view.setScore(coins)
                             step++
-
                             if (step == getCurrentQuestion().answer.length)
                                 checkResult()
                             for (j in randomVariants) {
                                 if (view.getVariantText(j).toString() == view.getAnswerText(i).toString()) {
                                     view.hideVariant(j)
-                                    localStorage.shownLetters = shownLetters
                                     return@setConfirmClickListener
                                 }
                             }
@@ -104,7 +101,6 @@ class PresenterImpl(
             }
         dialog.setCancelable(false)
         dialog.show()
-
     }
 
     var limit = 0
@@ -158,8 +154,8 @@ class PresenterImpl(
                         dialog.setConfirmText("Main Menu")
                             .setConfirmClickListener {
                                 view.toMain()
-                                localStorage.coins = 300
-                                localStorage.level = 0
+                                localStorage.coins=300
+                                localStorage.level=0
                             }
                             .setCancelable(false)
                         dialog.show()
@@ -170,8 +166,8 @@ class PresenterImpl(
                             dialog.confirmText = "Continue"
                             dialog.setConfirmClickListener {
                                 it.dismiss()
-                                localStorage.level = position
-                                localStorage.coins = coins
+                                localStorage.level=position
+                                localStorage.coins=coins
                                 loadData()
 
                             }.show()
@@ -199,34 +195,24 @@ class PresenterImpl(
     }
 
     override fun loadData() {
-        val currentQuestion = getCurrentQuestion()
         getCurrentQuestion().answer.indices.forEach { i ->
             randomAnswers.add(i)
         }
         getCurrentQuestion().variants.indices.forEach { i ->
             randomVariants.add(i)
         }
-
         step = 0
         view.setLevel(position + 1)
         view.setScore(coins)
         clearAnswersButton()
         showVariants()
 
+        val currentQuestion = getCurrentQuestion()
         view.loadQuestionData(
             currentQuestion.image,
             currentQuestion.answer.length,
             currentQuestion.variants
         )
-        val letters = localStorage.shownLetters
-        if (letters.size > 0) {
-            for (i in letters) {
-                if (i != -1) {
-                    view.setAnswerText(i, currentQuestion.answer[i].toString())
-                    view.setAnswerTag(i,"tag")
-                }
-            }
-        }
     }
 
     private fun clearAnswersButton() {

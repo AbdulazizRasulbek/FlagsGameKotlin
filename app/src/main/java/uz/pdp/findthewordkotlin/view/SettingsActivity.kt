@@ -1,10 +1,11 @@
-package uz.pdp.findthewordkotlin
+package uz.pdp.findthewordkotlin.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_settings.*
-import uz.pdp.findthewordkotlin.Model.LocalStorage
+import uz.pdp.findthewordkotlin.R
+import uz.pdp.findthewordkotlin.model.LocalStorage
 
 class SettingsActivity : AppCompatActivity() {
 

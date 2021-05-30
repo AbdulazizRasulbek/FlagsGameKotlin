@@ -11,7 +11,6 @@ import android.widget.Button
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import uz.pdp.findthewordkotlin.contract.GameContract
-import uz.pdp.findthewordkotlin.model.LocalStorage
 import uz.pdp.findthewordkotlin.presenter.PresenterImpl
 import uz.pdp.findthewordkotlin.R
 
@@ -27,8 +26,7 @@ class MainActivity : AppCompatActivity(), GameContract.View {
     }
 
     private fun loadData() {
-        val localStorage=LocalStorage(this)
-        presenter = PresenterImpl(localStorage,this)
+        presenter = PresenterImpl(this,this)
         showLetter.setOnClickListener {
             presenter.showLetterClick()
         }

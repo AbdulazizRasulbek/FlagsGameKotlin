@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_menu.*
 import uz.pdp.findthewordkotlin.R
-import uz.pdp.findthewordkotlin.SettingsActivity
 
 class MenuActivity : AppCompatActivity() {
 

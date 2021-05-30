@@ -32,7 +32,6 @@ private val pref= SecurePreferences(context,"abdulaziz","Prefs")
         value.forEachIndexed { index, i ->
             e.putInt("SHOWNLETTER_$index",i)
         }
-        e.apply()
 
     }
     fun clearData(){
